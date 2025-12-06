@@ -1,0 +1,50 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below if you use vendor modules)
+# vendor/
+
+# Go workspace file
+go.work
+
+# --- IDE & Editor Specific ---
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ / GoLand
+.idea/
+*.iml
+*.iws
+
+# MacOS
+.DS_Store
+
+# --- Environment Variables ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# --- Project Specific (Customize as needed) ---
+# Assuming your main binary is named 'app' or 'main'
+# You can also ignore the bin directory if you output builds there
+/bin/
+/dist/
+main
+app
