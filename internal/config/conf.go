@@ -9,7 +9,11 @@ import (
 )
 
 type HttpServerConfig struct {
-	Addr string
+	Addr            string `yaml:"address"`
+	ReadTimeout     string `yaml:"read_timeout"`
+	WriteTimeout    string `yaml:"write_timeout"`
+	IdleTimeout     string `yaml:"idle_timeout"`
+	ShutdownTimeout string `yaml:"shutdown_timeout"`
 }
 
 type Config struct {
