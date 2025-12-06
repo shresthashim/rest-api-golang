@@ -1,0 +1,13 @@
+env: "dev"
+
+storage_path: "storage/dev/storage.db"
+
+http_server:
+  address: "localhost:8080"
+  read_timeout: 10s
+  write_timeout: 10s
+  idle_timeout: 120s
+  shutdown_timeout: 15s
+  
+  
+
