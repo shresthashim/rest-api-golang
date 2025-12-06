@@ -6,4 +6,3 @@ func main() {
 
 	fmt.Println("Hello, API!")
 }
-

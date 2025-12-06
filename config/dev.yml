@@ -8,6 +8,3 @@ http_server:
   write_timeout: 10s
   idle_timeout: 120s
   shutdown_timeout: 15s
-  
-  
-
