@@ -12,13 +12,18 @@ import (
 
 	"github.com/shresthashim/rest-api-golang/internal/config"
 	"github.com/shresthashim/rest-api-golang/internal/http/handlers/task"
+	"github.com/shresthashim/rest-api-golang/internal/storage/sqlite"
 )
 
 func main() {
 
 	cfg := config.MustLoadConfig()
 
-	var err error
+	sqliteStorage, err := sqlite.NewSQLiteStorage(cfg)
+	if err != nil {
+		log.Fatalf("Failed to initialize SQLite storage: %v", err)
+	}
+	defer sqliteStorage.Db.Close()
 
 	router := http.NewServeMux()
 
