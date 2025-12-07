@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/shresthashim/rest-api-golang/internal/config"
@@ -33,6 +37,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to parse idle timeout: %v", err)
 	}
+	shutdownTimeout, err := time.ParseDuration(cfg.HTTP.ShutdownTimeout)
+	if err != nil {
+		log.Fatalf("Failed to parse shutdown timeout: %v", err)
+	}
 
 	server := &http.Server{
 		Addr:         cfg.HTTP.Addr,
@@ -42,12 +50,33 @@ func main() {
 		IdleTimeout:  idleTimeout,
 	}
 
-	fmt.Println("Server started on", cfg.HTTP.Addr)
+	slog.Info("Server started", slog.String("addr", cfg.HTTP.Addr))
 
-	err = server.ListenAndServe()
+	done := make(chan os.Signal, 1)
+
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		err = server.ListenAndServe()
+
+		if err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
+
+	<-done
+
+	slog.Info("Server stopping...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+
+	err = server.Shutdown(ctx)
 
 	if err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+		slog.Error("Server forced to shutdown:", slog.String("error", err.Error()))
 	}
+
+	slog.Info("Server exited properly")
 
 }
