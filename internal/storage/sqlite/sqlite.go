@@ -22,7 +22,7 @@ func NewSQLiteStorage(cfg *config.Config) (*SQLiteStorage, error) {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
 		description TEXT NOT NULL,
-		completed BOOLEAN NOT NULL DEFAULT 0
+		completed BOOLEAN NOT NULL DEFAULT 0 
 	)`)
 
 	if err != nil {
@@ -31,4 +31,29 @@ func NewSQLiteStorage(cfg *config.Config) (*SQLiteStorage, error) {
 
 	return &SQLiteStorage{Db: db}, nil
 
+}
+
+func (s *SQLiteStorage) CreateTask(title, description string) (int, error) {
+
+	stat, err := s.Db.Prepare(`INSERT INTO tasks (title, description, completed) VALUES (?, ?, ?)`)
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer stat.Close()
+
+	result, err := stat.Exec(title, description, false)
+
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }

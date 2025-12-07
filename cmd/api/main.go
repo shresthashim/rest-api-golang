@@ -27,7 +27,7 @@ func main() {
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/tasks", task.New())
+	router.HandleFunc("POST /api/tasks", task.New(sqliteStorage))
 
 	readTimeout, err := time.ParseDuration(cfg.HTTP.ReadTimeout)
 	if err != nil {

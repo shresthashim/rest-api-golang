@@ -7,11 +7,12 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/shresthashim/rest-api-golang/internal/storage"
 	"github.com/shresthashim/rest-api-golang/internal/types"
 	"github.com/shresthashim/rest-api-golang/internal/utils/response"
 )
 
-func New() http.HandlerFunc {
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var task types.Task
@@ -33,7 +34,15 @@ func New() http.HandlerFunc {
 			return
 		}
 
-		response.WriteJSON(w, http.StatusCreated, map[string]string{"message": "Task created successfully"})
+		id, err := storage.CreateTask(task.Title, task.Description)
+		if err != nil {
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+
+		task.ID = id
+
+		response.WriteJSON(w, http.StatusCreated, task)
 
 	}
 }
