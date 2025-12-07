@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/shresthashim/rest-api-golang/internal/config"
+	"github.com/shresthashim/rest-api-golang/internal/http/handlers/task"
 )
 
 func main() {
@@ -21,9 +22,7 @@ func main() {
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to my API!"))
-	})
+	router.HandleFunc("POST /api/tasks", task.New())
 
 	readTimeout, err := time.ParseDuration(cfg.HTTP.ReadTimeout)
 	if err != nil {
